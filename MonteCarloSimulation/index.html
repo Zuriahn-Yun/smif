@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>SMIF Portfolio Projections</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.plot.ly/plotly-2.32.0.min.js"></script>
+</head>
+<body>
+    <div class="tab-bar">
+        <button class="tab-button active" id="btn-tab-overview">Portfolio Overview</button>
+        <button class="tab-button" id="btn-tab-analysis">Quantitative Analysis</button>
+        </div>
+
+    <div class="app-container">
+        
+        <div id="tab-overview" class="tab-content active-tab">
+            <div class="summary-card">
+                <h2>Estimated Total Value</h2>
+                <h1 id="total-fund-value">$0.00</h1>
+            </div>
+            
+            <div class="table-container">
+                <table id="holdings-table">
+                    <thead>
+                        <tr>
+                            <th>Ticker</th>
+                            <th>Shares Owned</th>
+                            <th>Last Price</th>
+                            <th>Estimated Value</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody id="holdings-body">
+                        </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div id="tab-analysis" class="tab-content">
+            <div class="sidebar">
+                <div class="control-header">
+                    <h3>Asset Selection</h3>
+                    <button id="btn-select-all" class="secondary-btn">Select All</button>
+                </div>
+                
+                <div class="checkbox-list" id="stock-checkbox-list">
+                    </div>
+
+                <div class="action-buttons">
+                    <button id="btn-run-monte">Run Monte Carlo</button>
+                    <button id="btn-run-corr">Run Correlation Matrix</button>
+                </div>
+                <div id="status-text">Ready.</div>
+            </div>
+
+            <div class="main-content">
+                <div id="plot-container">
+                    <div class="placeholder-text">Select assets and an analysis type to begin.</div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <script src="renderer.js"></script>
+</body>
+</html>

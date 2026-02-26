@@ -1,10 +1,11 @@
 from fastapi import FastAPI
 import data
+from monte import lifespan
 import monte
 import uvicorn
 
 
-app = FastAPI()
+app = FastAPI(lifespan=lifespan)
 app.include_router(data.router, prefix="/data", tags=["Data"])
 app.include_router(monte.router, prefix="/monte", tags=["Monte Carlo"])
 

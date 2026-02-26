@@ -1,0 +1,16 @@
+Monte Carlo Simulation
+    - Find a different version of the simulation that will yield better resuls/more interesting ones
+Optimize Variance
+    - Optimize the variance with the final bits of the Paper that Jalen sent over
+
+
+Design a full scale app as an internal tool in electron
+
+    App Design
+    Top has 3 or 4 tabs
+    First tab is a table displaying all of our stocks where the user can click and get a description
+        - this will also have the amount that we own and the last known value and then it will calcualte an estimate of our total value
+    
+    The second tabe will have a list of every stock in a similiar fashion and a select all button 
+    from there the user will be able to click on as many stock as they want and run a monte carlo or correlation matrix on those stocks
+    
