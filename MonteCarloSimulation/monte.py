@@ -108,6 +108,47 @@ def get_data(ticker):
 #         print("Exception: ", e)
 
 # Get geometric brownian motion when we already have the data
+
+@router.get("/portfolio_overview")
+def get_portfolio_overview():
+    # If the lifespan hasn't finished reading the JSON and downloading data
+    if not portfolio_cache:
+        return {"status": "loading", "message": "Backend is still fetching market data..."}
+
+    overview_data = []
+    total_fund_value = 0.0
+
+    # Iterate through the cache (populated from portfolio.json)
+    for ticker, stock_obj in portfolio_cache.items():
+        try:
+            # Extract the most recent closing price
+            close_data = stock_obj.data["Close"]
+            last_price = float(close_data.iloc[-1].iloc[0]) if isinstance(close_data, pd.DataFrame) else float(close_data.iloc[-1])
+            
+            # Calculate value using the shares loaded from the JSON
+            estimated_value = last_price * stock_obj.shares
+            total_fund_value += estimated_value
+            
+            overview_data.append({
+                "ticker": ticker,
+                "shares": stock_obj.shares,
+                "last_price": round(last_price, 2),
+                "estimated_value": round(estimated_value, 2),
+                "description": stock_obj.description
+            })
+        except Exception as e:
+            print(f"Error calculating overview for {ticker}: {e}")
+            continue
+    
+    # Sort largest holdings to the top of the table
+    overview_data = sorted(overview_data, key=lambda x: x['estimated_value'], reverse=True)
+
+    return {
+        "status": "success",
+        "total_value": total_fund_value,
+        "assets": overview_data
+    }
+    
 def gbm(data,M = 10,N=255,T=1):
     try:
         close_data = data["Close"]

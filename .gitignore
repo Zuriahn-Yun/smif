@@ -7,3 +7,4 @@
 /Data
 /CorrelationMatrix/correlation.csv
 /Data/StockTIckers.csv
+/MonteCarloSimulation/__pycache__

@@ -72,3 +72,62 @@ document.getElementById('btn-run-monte').addEventListener('click', async () => {
     console.log("Running Monte Carlo for:", selected);
     // TODO: Send 'selected' array to your FastAPI backend via fetch()
 });
+const totalFundValue = document.getElementById('total-fund-value');
+const tableBody = document.getElementById('holdings-body');
+
+// Formatter to make numbers look like currency (e.g., $1,200,000.00)
+const currencyFormatter = new Intl.NumberFormat('en-US', {
+    style: 'currency',
+    currency: 'USD',
+});
+
+async function loadPortfolioOverview() {
+    try {
+        const response = await fetch('http://127.0.0.1:59926/portfolio_overview');
+        const data = await response.json();
+
+        // If the backend is still booting and downloading from Yahoo Finance
+        if (data.status === "loading") {
+            totalFundValue.innerText = "Loading Market Data...";
+            tableBody.innerHTML = `<tr><td colspan="5" style="text-align:center;">${data.message}</td></tr>`;
+            
+            // Check again in 3 seconds
+            setTimeout(loadPortfolioOverview, 3000);
+            return;
+        }
+
+        // 1. Update the big header with the calculated total
+        totalFundValue.innerText = currencyFormatter.format(data.total_value);
+
+        // 2. Clear out the table
+        tableBody.innerHTML = '';
+
+        // 3. Loop through the returned assets and build the rows
+        data.assets.forEach(asset => {
+            const tr = document.createElement('tr');
+            
+            tr.innerHTML = `
+                <td><strong>${asset.ticker}</strong></td>
+                <td>${asset.shares.toLocaleString()}</td>
+                <td>${currencyFormatter.format(asset.last_price)}</td>
+                <td style="color: #005A9C; font-weight: bold;">
+                    ${currencyFormatter.format(asset.estimated_value)}
+                </td>
+                <td style="color: #666; font-size: 0.9em;">${asset.description}</td>
+            `;
+            
+            tableBody.appendChild(tr);
+        });
+
+    } catch (error) {
+        console.error("Failed to load overview:", error);
+        totalFundValue.innerText = "Connection Error";
+        tableBody.innerHTML = `<tr><td colspan="5" style="text-align:center; color:red;">Could not connect to backend server. Retrying...</td></tr>`;
+        
+        // Retry connection in 3 seconds
+        setTimeout(loadPortfolioOverview, 3000);
+    }
+}
+
+// Trigger the overview load as soon as the app starts
+loadPortfolioOverview();
